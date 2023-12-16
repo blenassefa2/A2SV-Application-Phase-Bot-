@@ -1,21 +1,26 @@
-from aiohttp import web
+import asyncio 
 
-from aiogram import Bot, Dispatcher, types
+from aiogram import Dispatcher
 
-from config import TOKEN_API
-
-bot = Bot(token=TOKEN_API)
-Bot.set_current(bot)
-webhook_path = f'/{TOKEN_API}'
+from bot_instance import bot
+from bot.handlers.user_handlers import user_router
 
 
+def register_routers(dp: Dispatcher) -> None:
+    """Registers routers"""
 
-async def set_webhook():
-    webhook_uri = f'{webhook_path}'
-
-
-
+    dp.include_router(user_router)
 
 
+async def main() -> None:
+    """The main function which will execute our event loop and start polling."""
+    
+    dp = Dispatcher()
+    print('Bot Starting....')
+    register_routers(dp)
+    print("Polling ....")
+    await dp.start_polling(bot)
+    
 
-
+if __name__ == "__main__":
+    asyncio.run(main())
